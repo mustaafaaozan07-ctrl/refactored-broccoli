@@ -1,0 +1,55 @@
+
+name: ConvertFlow Desktop Build
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: windows-latest
+            platform: windows
+          - os: macos-latest
+            platform: mac-arm64
+          - os: macos-15-intel
+            platform: mac-intel
+
+    runs-on: ${{ matrix.os }}
+
+    defaults:
+      run:
+        working-directory: ConvertFlow-Windows-Kaynak-ve-EXE-Olusturucu/ConvertFlow-Windows
+
+    steps:
+      - name: Checkout project
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build Windows
+        if: matrix.platform == 'windows'
+        run: npx electron-builder --win nsis --x64 --publish never
+
+      - name: Build Apple Silicon
+        if: matrix.platform == 'mac-arm64'
+        run: npx electron-builder --mac dmg --arm64 --publish never
+
+      - name: Build Intel Mac
+        if: matrix.platform == 'mac-intel'
+        run: npx electron-builder --mac dmg --x64 --publish never
+
+      - name: Upload installers
+        uses: actions/upload-artifact@v4
+        with:
+          name: ConvertFlow-${{ matrix.platform }}
+          path: ConvertFlow-Windows-Kaynak-ve-EXE-Olusturucu/ConvertFlow-Windows/dist/*
+          if-no-files-found: error
