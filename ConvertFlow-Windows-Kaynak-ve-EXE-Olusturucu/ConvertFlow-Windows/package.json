@@ -1,0 +1,11 @@
+{
+  "name":"convertflow-desktop",
+  "version":"2.0.0",
+  "description":"ConvertFlow masaustu dosya donusturucu",
+  "main":"main.cjs",
+  "author":"ConvertFlow",
+  "license":"MIT",
+  "scripts":{"start":"electron .","build:win":"electron-builder --win nsis --x64"},
+  "devDependencies":{"electron":"^33.4.11","electron-builder":"^25.1.8"},
+  "build":{"appId":"com.convertflow.desktop","productName":"ConvertFlow","files":["main.cjs","web/**/*"],"directories":{"output":"release"},"win":{"target":["nsis"]},"nsis":{"oneClick":false,"allowToChangeInstallationDirectory":true,"createDesktopShortcut":true,"createStartMenuShortcut":true,"artifactName":"ConvertFlow-Setup-${version}.exe"}}
+}
